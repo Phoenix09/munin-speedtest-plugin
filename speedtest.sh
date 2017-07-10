@@ -5,21 +5,18 @@ case $1 in
     echo "graph_category network"
     echo "graph_title Speedtest"
     echo "graph_args --base 1000 -l 0"
-    echo "graph_vlabel DL / UL"
+    echo "graph_vlabel Speed (Mb/s)"
     echo "graph_scale no"
-    echo "down.label DL"
-    echo "down.type GAUGE"
-    echo "down.draw LINE1"
-    echo "up.label UL"
-    echo "up.type GAUGE"
-    echo "up.draw LINE1"
-    echo "graph_info Graph of Internet Connection Speed"
+    echo "down.label Download"
+    echo "down.draw LINE"
+    echo "up.label Upload"
+    echo "up.draw LINE"
+    echo "graph_info Speed Graph"
     exit 0;;
     esac
 
-OUTPUT=`cat /tmp/speedtest.out`
-DOWNLOAD=`echo "$OUTPUT" | grep Download | sed 's/[a-zA-Z:]* \([0-9]*\.[0-9]*\) [a-zA-Z/]*/\1/'`
-UPLOAD=`echo "$OUTPUT" | grep Upload | sed 's/[a-zA-Z:]* \([0-9]*\.[0-9]*\) [a-zA-Z/]*/\1/'`
+echo -n "down.value "
+awk '/Download:/ {print $2}' /tmp/speedtest.out
 
-echo "down.value $DOWNLOAD"
-echo "up.value $UPLOAD"
+echo -n "up.value "
+awk '/Upload:/ {print $2}' /tmp/speedtest.out
